@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Toaster } from 'react-hot-toast';
+import { useEffect } from 'react';
+import { toast, Toaster } from 'react-hot-toast';
 import SearchBar from '../SearchBar/SearchBar';
 import MovieGrid from '../MovieGrid/MovieGrid';
 import MovieModal from '../MovieModal/MovieModal';
@@ -35,6 +36,12 @@ export default function App() {
     enabled: Boolean(query.trim()),
     placeholderData: keepPreviousData,
   });
+
+  useEffect(() => {
+  if (data && data.results.length === 0 && Boolean(query.trim())) {
+    toast.error('No movies found for your request.');
+  }
+}, [data, query]);
   
   const movies = data?.results ?? [];
 const totalPages = data?.total_pages ?? 0;
@@ -55,7 +62,7 @@ const totalPages = data?.total_pages ?? 0;
     <>
       <SearchBar onSubmit={handleSearch} />
       <Toaster position="top-center" />
-      {data && <ReactPaginate
+      {totalPages > 1 && movies.length > 0  && <ReactPaginate
         pageCount={totalPages}
         pageRangeDisplayed={5}
         marginPagesDisplayed={1}
