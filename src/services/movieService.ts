@@ -19,10 +19,13 @@ const apiClient = axios.create({
     },
 });
 
-export const fetchMovies = async (query: string): Promise<Movie[]> => {
+export const fetchMovies = async (query: string, page: number): Promise<MoviesHttpResponse> => {
     const response = await apiClient.get<MoviesHttpResponse>('/search/movie', {
-        params: { query },
+        params: {
+            query,
+            page
+        },
     });
 
-    return response.data.results
+    return response.data
 }
